@@ -1,5 +1,6 @@
 # huge_data_importer
-[英文版]
+[英文版](readme.md)
+
 这是一个用于将数据从CSV、XLSX或ZIP文件导入到MySQL数据库的Java项目。它提供了灵活的配置选项和可扩展的架构,使数据导入过程更加简单和高效。
 
 ## 功能特性
