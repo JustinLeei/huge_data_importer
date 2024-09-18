@@ -1,5 +1,7 @@
 # huge_data_importer
 
+[中文版](README_zh.md)
+
 This is a Java project for importing data from CSV, XLSX, or ZIP files into a MySQL database. It offers flexible configuration options and an extensible architecture, making the data import process simpler and more efficient.
 
 ## Features
