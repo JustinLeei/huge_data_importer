@@ -1,121 +1,121 @@
 # huge_data_importer
 
-这是一个用于将数据从CSV、XLSX或ZIP文件导入到MySQL数据库的Java项目。它提供了灵活的配置选项和可扩展的架构,使数据导入过程更加简单和高效。
+This is a Java project for importing data from CSV, XLSX, or ZIP files into a MySQL database. It offers flexible configuration options and an extensible architecture, making the data import process simpler and more efficient.
 
-## 功能特性
+## Features
 
-- 支持解析CSV、XLSX和ZIP格式的文件
-- 可配置数据表和列名表的前缀以及是否创建新表
-- 支持高达100万行以上的数据导入,占用内存小,速度快
-- 可以方便地集成到其他Java项目中使用
+- Supports parsing CSV, XLSX, and ZIP file formats
+- Configurable prefixes for data tables and column name tables, with options to create new tables
+- Supports importing over 1 million rows of data with low memory usage and high speed
+- Easy integration into other Java projects
 
-## 项目结构
+## Project Structure
 
-- `ImportConfig`: 存储导入配置的类，包括数据表前缀、列名表前缀、是否创建数据表和列名表等。
-- `FileParser`: 文件解析器接口，定义了解析文件的方法。
-- `CSVParser`: CSV文件解析器的实现类。
-- `XLSXParser`: XLSX文件解析器的实现类。
-- `CellUtil`: 工具类，用于处理和规范化单元格数据。
-- `CSVReader`: 读取CSV文件的工具类。
-- `XlsxReadListener`: XLSX文件读取监听器。
-- `DatabaseImporter`: 数据库导入器接口。
-- `DatabaseImporterImpl`: 数据库导入器的实现类。
-- `DataWriter`: 数据写入器接口。
-- `MysqlWriter`: MySQL数据写入器的实现类。
-- `exception`: 包含各种自定义异常类。
-- `config`: 包含配置类，如`TableConfig`和`ThreadExecuter`。
+- `ImportConfig`: Class for storing import configurations, including data table prefix, column name table prefix, options to create data tables and column name tables, etc.
+- `FileParser`: File parser interface, defining methods for parsing files.
+- `CSVParser`: Implementation class for CSV file parsing.
+- `XLSXParser`: Implementation class for XLSX file parsing.
+- `CellUtil`: Utility class for handling and normalizing cell data.
+- `CSVReader`: Utility class for reading CSV files.
+- `XlsxReadListener`: XLSX file reading listener.
+- `DatabaseImporter`: Database importer interface.
+- `DatabaseImporterImpl`: Implementation class for the database importer.
+- `DataWriter`: Data writer interface.
+- `MysqlWriter`: Implementation class for MySQL data writing.
+- `exception`: Contains various custom exception classes.
+- `config`: Contains configuration classes such as `TableConfig` and `ThreadExecuter`.
 
-## 配置
+## Configuration
 
-项目使用Spring框架进行配置管理,通过`application.properties`或`application.yml`文件配置数据库连接。
+The project uses the Spring framework for configuration management, configuring database connections through `application.properties` or `application.yml` files.
 
-## 使用方法
+## Usage
 
-1. 克隆或下载项目到本地。
-2. 配置`application.yaml`,指定原始**非数值列**映射前后的名称。数值列请查看**入库后的效果**
+1. Clone or download the project locally.
+2. Configure `application.yaml`, specifying the original and mapped names for **non-numeric columns**. For numeric columns, please check the **Database Entry Effect** section.
    ```yaml
    hdi:
      table:
-       # 数字列名保留设置，设置为 false 时数字列名将转换为1, 2, 3...，实际列名存储在_colNameTable中
+       # Numeric column name retention setting, when set to false, numeric column names will be converted to 1, 2, 3..., actual column names stored in _colNameTable
        keep-original-numeric-names: false
    
-       # 时间列映射：原始列名 -> 转换后的列名
+       # Time column mapping: original column name -> converted column name
        time-column-mapping:
-         "[入学时间]": 入学时间
-         "[毕业时间]": 毕业时间
-         "[出生日期]": 出生日期
-         "[注册日期]": 注册日期
-         "[最后登录时间]": 最后登录时间
+         "[Enrollment Date]": EnrollmentDate
+         "[Graduation Date]": GraduationDate
+         "[Date of Birth]": DateOfBirth
+         "[Registration Date]": RegistrationDate
+         "[Last Login Time]": LastLoginTime
    
-       # 非时间列映射：原始列名 -> 转换后的列名
+       # Non-time column mapping: original column name -> converted column name
        non-time-column-mapping:
-         "[学号]": 学生编号
-         "[姓名]": 姓名
-         "[性别]": 性别
-         "[年龄]": 年龄
-         "[专业名称]": 专业
-         "[班级名称]": 班级
-         "[联系电话]": 联系电话
-         "[电子邮箱]": 电子邮箱
-         "[家庭住址]": 家庭住址
-         "[身份证号]": 身份证号
-         "[紧急联系人]": 紧急联系人
-         "[紧急联系人电话]": 紧急联系人电话
-         "[学历层次]": 学历层次
-         "[学籍状态]": 学籍状态
-         "[奖学金等级]": 奖学金等级
-         "[学分]": 累计学分
-         "[课程名称]": 当前课程名称
-         "[导师姓名]": 导师姓名
-         "[宿舍号]": 宿舍号
-
+         "[Student ID]": StudentNumber
+         "[Name]": Name
+         "[Gender]": Gender
+         "[Age]": Age
+         "[Major Name]": Major
+         "[Class Name]": Class
+         "[Contact Phone]": ContactPhone
+         "[Email]": Email
+         "[Home Address]": HomeAddress
+         "[ID Number]": IDNumber
+         "[Emergency Contact]": EmergencyContact
+         "[Emergency Contact Phone]": EmergencyContactPhone
+         "[Education Level]": EducationLevel
+         "[Enrollment Status]": EnrollmentStatus
+         "[Scholarship Level]": ScholarshipLevel
+         "[Credits]": TotalCredits
+         "[Course Name]": CurrentCourseName
+         "[Advisor Name]": AdvisorName
+         "[Dorm Number]": DormNumber
    ```
-4. 将需要导入的CSV、XLSX或ZIP文件放置在指定目录下。
-5. 在项目中引入依赖,注入`DatabaseImporterImpl`对象:
+3. Place the CSV, XLSX, or ZIP files to be imported in the specified directory.
+4. Import the dependency in your project and inject the `DatabaseImporterImpl` object:
    ```java
    @Autowired 
    DatabaseImporterImpl databaseImporter;
    ```
-6. 调用`importToDatabase`方法执行数据导入:
+5. Call the `importToDatabase` method to execute the data import:
    ```java
    databaseImporter.importToDatabase(filePaths, importConfig);
    ```
-   其中`filePaths`是要导入的文件路径列表,`importConfig`是导入的相关配置。
-7. 数据导入完成后,可以在配置的MySQL数据库中查看导入的数据。
-## 入库后效果
+   Where `filePaths` is a list of file paths to be imported, and `importConfig` is the related import configuration.
+6. After the data import is complete, you can view the imported data in the configured MySQL database.
+
+## Database Entry Effect
+
 ```
 /**
- * {para}_colNameTable的形式如下：
+ * The format of {para}_colNameTable is as follows:
  *
  * id |originColName
  * ---+-------------------------------------
- *  1 |学生ID
- *  2 |学生姓名
- *  3 |学生年龄
- *  4 |入学年份
- *  5 |专业
- *  6 |学期GPA
- *  7 |出勤率(%)
- *  8 |学费缴纳状态
- *  9 |毕业状态
- * 10 |奖学金获得情况
+ *  1 |Student ID
+ *  2 |Student Name
+ *  3 |Student Age
+ *  4 |Enrollment Year
+ *  5 |Major
+ *  6 |Semester GPA
+ *  7 |Attendance Rate (%)
+ *  8 |Tuition Payment Status
+ *  9 |Graduation Status
+ * 10 |Scholarship Status
  * -----------------------------------------
  */
-
 /**
- * {para}_dataTable的示例：
- * 开始时间          |学生ID |学生姓名     |1   |2     |3 |4     |5   |6   |7   |8
- * ----------------+------+------------+----+------+---+------+----+----+----+---
- * 2024-04-29 12:00:00|1001 |张三        |1001|张三   |20 |2022  |计算机|3.5 |95.0|已缴
- * 2024-04-29 12:15:00|1002 |李四        |1002|李四   |21 |2021  |数学  |3.8 |90.0|已缴
+ * Example of {para}_dataTable:
+ * StartTime        |StudentID|StudentName |1   |2     |3 |4     |5       |6   |7   |8
+ * ----------------+--------+------------+----+------+---+------+--------+----+----+---
+ * 2024-04-29 12:00:00|1001    |John Doe    |1001|John Doe|20 |2022  |Computer|3.5 |95.0|Paid
+ * 2024-04-29 12:15:00|1002    |Jane Smith  |1002|Jane Smith|21 |2021  |Math    |3.8 |90.0|Paid
  * ---------------------------------------------------------------------
  */
-
 ```
-## 贡献
 
-欢迎对本项目提出建议和贡献代码。如果您发现了任何问题或有改进的想法，请提交Issue或Pull Request。
+## Contribution
 
-## 许可证
+Suggestions and code contributions to this project are welcome. If you find any issues or have ideas for improvements, please submit an Issue or Pull Request.
 
-本项目采用[MIT许可证](LICENSE)。
+## License
+
+This project is licensed under the [MIT License](LICENSE).
