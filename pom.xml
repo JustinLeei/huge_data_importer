@@ -12,10 +12,10 @@
         <version>2.3.12.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-  <distributionManagement>
+    <distributionManagement>
   <repository>
-    <id>justinlee.com</id>
-    <name>huge-data-importer</name>
+    <id>github</id>
+    <name>GitHub Packages</name>
     <url>https://maven.pkg.github.com/JustinLeei/huge_data_importer</url>
   </repository>
 </distributionManagement>
